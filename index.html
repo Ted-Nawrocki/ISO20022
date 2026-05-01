@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ISO 20022 Corporate Actions Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0f1a;
+  --amber: #e8a020;
+  --amber-dim: rgba(232,160,32,.15);
+  --amber-mid: rgba(232,160,32,.4);
+  --amber-glow: rgba(232,160,32,.06);
+  --linen: #f5f1eb;
+  --linen-dim: rgba(245,241,235,.65);
+  --linen-faint: rgba(245,241,235,.2);
+  --linen-ghost: rgba(245,241,235,.06);
+  --glass: rgba(11,15,26,.85);
+  --sidebar: 272px;
+  --blue-msg: rgba(100,160,220,.7);
+  --blue-dim: rgba(100,160,220,.12);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--bg);
+  color:var(--linen);
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:15px;
+  line-height:1.75;
+  min-height:100vh;
+}
+
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(232,160,32,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,160,32,.025) 1px, transparent 1px);
+  background-size:52px 52px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* LAYOUT */
+.layout{display:flex;min-height:100vh;position:relative;z-index:1}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sidebar);
+  position:fixed;
+  top:0;left:0;bottom:0;
+  background:var(--glass);
+  backdrop-filter:blur(24px);
+  border-right:1px solid var(--amber-dim);
+  overflow-y:auto;
+  z-index:200;
+  display:flex;
+  flex-direction:column;
+}
+.sidebar::-webkit-scrollbar{width:2px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--amber-dim)}
+
+.sb-header{
+  padding:28px 22px 20px;
+  border-bottom:1px solid var(--amber-dim);
+  position:sticky;top:0;
+  background:var(--glass);
+  backdrop-filter:blur(24px);
+  z-index:10;
+}
+.sb-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:8.5px;letter-spacing:.18em;
+  color:var(--amber);text-transform:uppercase;
+  margin-bottom:8px;
+}
+.sb-title{
+  font-family:'DM Serif Display',serif;
+  font-size:15px;line-height:1.35;
+  color:var(--linen);
+}
+
+.sb-nav{padding:12px 0 32px}
+
+.nav-section-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:8.5px;letter-spacing:.14em;color:var(--amber);
+  text-transform:uppercase;
+  padding:14px 22px 5px;
+  display:block;
+}
+
+.nav-link{
+  display:block;
+  padding:5px 22px 5px 32px;
+  font-size:12.5px;color:var(--linen-dim);
+  text-decoration:none;
+  transition:color .18s,background .18s,border-left-color .18s;
+  border-left:2px solid transparent;
+  line-height:1.45;
+}
+.nav-link:hover{color:var(--linen);background:var(--amber-glow)}
+.nav-link.active{
+  color:var(--linen);background:var(--amber-dim);
+  border-left-color:var(--amber);padding-left:30px;
+}
+.nav-link-top{
+  padding-left:22px;font-size:13px;font-weight:500;
+  color:var(--linen);
+}
+.nav-link-top.active{padding-left:20px}
+
+/* MAIN */
+.main{
+  margin-left:var(--sidebar);
+  flex:1;max-width:880px;
+  padding:0 52px 100px;
+}
+
+/* HERO */
+.hero{
+  min-height:460px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:88px 0 56px;
+  position:relative;
+  border-bottom:1px solid var(--amber-dim);
+  margin-bottom:64px;
+}
+.hero::before{
+  content:'';
+  position:absolute;
+  top:0;left:-52px;right:-52px;bottom:0;
+  background:radial-gradient(ellipse at 25% 35%, rgba(232,160,32,.09) 0%, transparent 55%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:.18em;
+  color:var(--amber);text-transform:uppercase;
+  margin-bottom:22px;
+}
+.hero-title{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(34px,4.8vw,54px);
+  line-height:1.12;color:var(--linen);
+  max-width:660px;margin-bottom:22px;
+}
+.hero-sub{
+  font-size:16px;color:var(--linen-dim);
+  max-width:560px;line-height:1.8;margin-bottom:36px;
+}
+.hero-stats{display:flex;gap:36px;flex-wrap:wrap}
+.hero-stat{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;color:var(--amber);
+  letter-spacing:.04em;
+}
+.hero-stat span{
+  display:block;
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:12px;color:var(--linen-faint);
+  margin-top:2px;font-weight:400;letter-spacing:0;
+}
+
+/* SECTIONS */
+section{
+  margin-bottom:68px;
+  opacity:0;transform:translateY(20px);
+  transition:opacity .55s ease,transform .55s ease;
+}
+section.visible{opacity:1;transform:translateY(0)}
+
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;letter-spacing:.16em;
+  color:var(--amber);text-transform:uppercase;
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:14px;
+}
+.eyebrow::after{content:'';flex:1;height:1px;background:var(--amber-dim)}
+
+.section-title{
+  font-family:'DM Serif Display',serif;
+  font-size:30px;color:var(--linen);
+  line-height:1.2;margin-bottom:14px;
+}
+.section-lead{
+  font-size:15.5px;color:var(--linen-dim);
+  max-width:660px;line-height:1.82;
+  margin-bottom:32px;
+}
+
+.subsection-title{
+  font-family:'DM Serif Display',serif;
+  font-size:21px;color:var(--linen);
+  margin-bottom:12px;margin-top:36px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--amber-dim);
+}
+
+p{color:var(--linen-dim);max-width:660px;margin-bottom:14px;line-height:1.8}
+p strong{color:var(--linen);font-weight:500}
+
+.amber-rule{
+  height:1px;
+  background:linear-gradient(to right, var(--amber-mid), transparent);
+  margin:60px 0;
+}
+
+/* CALLOUT */
+.callout{
+  background:rgba(232,160,32,.05);
+  border-left:3px solid var(--amber);
+  padding:16px 20px;margin:22px 0;
+  border-radius:0 4px 4px 0;
+  max-width:680px;
+}
+.callout-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:8.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--amber);
+  margin-bottom:6px;
+}
+.callout p{margin:0;font-size:13.5px}
+
+/* CARDS */
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:14px;margin:22px 0;
+}
+.card{
+  background:var(--linen-ghost);
+  border:1px solid var(--amber-dim);
+  border-radius:6px;padding:20px;
+  transition:border-color .2s,background .2s;
+}
+.card:hover{border-color:var(--amber-mid);background:rgba(245,241,235,.08)}
+
+.card-abbrev{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:16px;font-weight:500;
+  color:var(--amber);margin-bottom:3px;
+}
+.card-name{
+  font-size:13px;font-weight:500;
+  color:var(--linen);margin-bottom:6px;
+}
+.card-seev{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;color:var(--linen-faint);
+  margin-bottom:10px;
+}
+.card-desc{
+  font-size:12.5px;color:var(--linen-dim);line-height:1.65;
+}
+.card-dir{
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:'IBM Plex Mono',monospace;font-size:9.5px;
+  color:var(--amber);background:var(--amber-dim);
+  padding:2px 9px;border-radius:2px;margin-top:10px;
+}
+.card-dir.inbound{color:var(--blue-msg);background:var(--blue-dim)}
+
+/* TABLES */
+.tbl-wrap{
+  overflow-x:auto;margin:22px 0;
+  border:1px solid var(--amber-dim);border-radius:6px;
+}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{background:rgba(232,160,32,.07)}
+th{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--amber);
+  padding:12px 16px;text-align:left;
+  border-bottom:1px solid var(--amber-dim);font-weight:500;
+}
+td{
+  padding:12px 16px;
+  border-bottom:1px solid rgba(232,160,32,.06);
+  color:var(--linen-dim);vertical-align:top;
+  line-height:1.65;
+}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(245,241,235,.02)}
+td.mono{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--amber)}
+td.strong{color:var(--linen);font-weight:500}
+td.note{font-size:12px}
+
+/* MX IDENTIFIER DECODER */
+.id-decoder{
+  display:flex;align-items:flex-start;
+  gap:0;margin:22px 0;
+  padding:28px 24px;
+  background:var(--linen-ghost);
+  border:1px solid var(--amber-dim);border-radius:6px;
+  overflow-x:auto;
+}
+.id-seg{display:flex;flex-direction:column;align-items:center}
+.id-dot{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:26px;color:var(--linen-faint);
+  line-height:1;padding:4px 2px;
+  align-self:flex-start;margin-top:3px;
+}
+.id-chars{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:26px;font-weight:500;
+  line-height:1;padding:4px 8px;
+  border-bottom:2px solid;
+}
+.id-chars-0{color:var(--amber);border-color:var(--amber)}
+.id-chars-1{color:#7ec8e3;border-color:#7ec8e3}
+.id-chars-2{color:#c8a87e;border-color:#c8a87e}
+.id-chars-3{color:#a87ec8;border-color:#a87ec8}
+.id-label{
+  font-size:10px;color:var(--linen-faint);
+  margin-top:8px;text-align:center;
+  max-width:88px;line-height:1.4;
+}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:28px;margin:24px 0}
+.timeline::before{
+  content:'';position:absolute;
+  left:6px;top:6px;bottom:0;
+  width:1px;
+  background:linear-gradient(to bottom, var(--amber), transparent);
+}
+.tl-item{position:relative;margin-bottom:28px}
+.tl-item::before{
+  content:'';position:absolute;
+  left:-26px;top:6px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--amber);border:2px solid var(--bg);
+}
+.tl-year{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;color:var(--amber);margin-bottom:3px;
+}
+.tl-event{font-size:14px;font-weight:500;color:var(--linen);margin-bottom:4px}
+.tl-desc{font-size:13px;color:var(--linen-dim);line-height:1.65;max-width:580px}
+
+/* FLOW DIAGRAMS */
+.flow-diagram{
+  margin:28px 0;
+  background:rgba(245,241,235,.02);
+  border:1px solid var(--amber-dim);
+  border-radius:8px;padding:26px 28px;
+  max-width:720px;
+}
+.flow-title{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;letter-spacing:.13em;
+  color:var(--amber);text-transform:uppercase;
+  margin-bottom:22px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--amber-dim);
+}
+
+.flow-actors{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;margin-bottom:20px;
+}
+.flow-actor{
+  padding:7px 14px;border-radius:4px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;font-weight:500;
+  text-align:center;text-transform:uppercase;
+  letter-spacing:.09em;
+}
+.flow-actor-dtc{
+  background:var(--amber-dim);
+  border:1px solid var(--amber-mid);color:var(--amber);
+}
+.flow-actor-par{
+  background:var(--blue-dim);
+  border:1px solid rgba(100,160,220,.3);
+  color:var(--blue-msg);
+}
+
+.flow-rows{display:flex;flex-direction:column;gap:2px}
+
+.flow-row{
+  display:grid;
+  grid-template-columns:1fr 72px 1fr;
+  align-items:center;gap:0;
+  padding:6px 0;
+  border-bottom:1px solid rgba(232,160,32,.05);
+}
+.flow-row:last-child{border-bottom:none}
+
+.flow-cell{
+  display:flex;flex-direction:column;align-items:center;
+  gap:3px;
+}
+.flow-cell.dtc{align-items:flex-start}
+.flow-cell.par{align-items:flex-end}
+.flow-cell.empty{opacity:0;pointer-events:none}
+
+.flow-code{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;font-weight:500;
+  padding:3px 10px;border-radius:3px;
+  white-space:nowrap;
+}
+.dtc .flow-code{color:var(--amber);background:var(--amber-dim)}
+.par .flow-code{color:var(--blue-msg);background:var(--blue-dim)}
+
+.flow-desc{
+  font-size:10.5px;color:var(--linen-faint);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:190px;
+}
+.par .flow-desc{text-align:right}
+
+.flow-arrow{
+  display:flex;flex-direction:column;
+  align-items:center;gap:2px;
+}
+.flow-arrow-line{
+  position:relative;
+  width:100%;height:2px;
+  background:rgba(232,160,32,.35);
+}
+.flow-arrow-right .flow-arrow-line::after{
+  content:'';position:absolute;right:-1px;top:-4px;
+  border-left:7px solid rgba(232,160,32,.6);
+  border-top:5px solid transparent;
+  border-bottom:5px solid transparent;
+}
+.flow-arrow-left .flow-arrow-line::before{
+  content:'';position:absolute;left:-1px;top:-4px;
+  border-right:7px solid rgba(100,160,220,.5);
+  border-top:5px solid transparent;
+  border-bottom:5px solid transparent;
+}
+.flow-arrow-left .flow-arrow-line{background:rgba(100,160,220,.3)}
+
+.flow-dir{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:8.5px;color:var(--linen-faint);
+  white-space:nowrap;
+}
+
+/* GLOSSARY */
+.glossary-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(295px,1fr));
+  gap:12px;margin-top:16px;
+}
+.gl-item{
+  padding:14px 16px;
+  background:var(--linen-ghost);
+  border:1px solid rgba(232,160,32,.08);
+  border-radius:4px;
+}
+.gl-term{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;color:var(--amber);margin-bottom:4px;
+}
+.gl-def{font-size:12.5px;color:var(--linen-dim);line-height:1.65}
+
+/* PHASE TABLE */
+.phase-grid{
+  display:grid;grid-template-columns:auto 1fr 1fr 1fr;
+  gap:0;border:1px solid var(--amber-dim);
+  border-radius:6px;overflow:hidden;margin:22px 0;
+  font-size:13px;
+}
+.ph-header{
+  background:rgba(232,160,32,.07);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--amber);padding:11px 16px;
+  border-bottom:1px solid var(--amber-dim);
+}
+.ph-cell{
+  padding:13px 16px;
+  border-bottom:1px solid rgba(232,160,32,.06);
+  color:var(--linen-dim);
+  border-right:1px solid rgba(232,160,32,.06);
+}
+.ph-cell:nth-child(4n){border-right:none}
+.ph-cell.phase-num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;color:var(--amber);
+  text-align:center;
+}
+.ph-cell.phase-name{color:var(--linen);font-weight:500}
+.ph-last .ph-cell{border-bottom:none}
+
+/* RESPONSIVE */
+@media(max-width:880px){
+  .sidebar{width:220px}
+  .main{margin-left:220px;padding:0 28px 80px}
+}
+@media(max-width:620px){
+  .sidebar{display:none}
+  .main{margin-left:0;padding:0 20px 60px}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sb-header">
+    <div class="sb-eyebrow">DTCC · SWIFT · US Market</div>
+    <div class="sb-title">ISO 20022 Corporate Actions<br>Field Guide</div>
+  </div>
+  <nav class="sb-nav">
+    <div><a href="#overview" class="nav-link nav-link-top">Overview</a></div>
+
+    <span class="nav-section-label">The Evolution</span>
+    <a href="#iso-7775" class="nav-link">ISO 7775 Era</a>
+    <a href="#iso-15022" class="nav-link">ISO 15022 &amp; MT Messages</a>
+    <a href="#iso-20022-standard" class="nav-link">The ISO 20022 Standard</a>
+    <a href="#migration-timeline" class="nav-link">Migration Timeline</a>
+
+    <span class="nav-section-label">SEEV Messages</span>
+    <a href="#mx-identifier" class="nav-link">Reading an MX Identifier</a>
+    <a href="#announcements" class="nav-link">Announcement Group</a>
+    <a href="#instructions" class="nav-link">Instruction Group</a>
+    <a href="#status-messages" class="nav-link">Status Group</a>
+    <a href="#entitlements" class="nav-link">Entitlement Group</a>
+    <a href="#meetings" class="nav-link">Meeting Messages</a>
+
+    <div><a href="#mt-mx-mapping" class="nav-link nav-link-top" style="padding-top:14px">MT to MX Mapping</a></div>
+
+    <span class="nav-section-label">Event Playbooks</span>
+    <a href="#voluntary" class="nav-link">Voluntary Events</a>
+    <a href="#mwco" class="nav-link">Mandatory with Choice</a>
+    <a href="#mandatory" class="nav-link">Mandatory Events</a>
+    <a href="#redemptions" class="nav-link">Redemptions</a>
+    <a href="#income" class="nav-link">Income &amp; Distributions</a>
+
+    <span class="nav-section-label">DTC Integration</span>
+    <a href="#ca-transformation" class="nav-link">CA Transformation Program</a>
+    <a href="#ca-web" class="nav-link">CA Web</a>
+    <a href="#us-extensions" class="nav-link">US Market Extensions</a>
+    <a href="#current-landscape" class="nav-link">Current Landscape</a>
+
+    <div><a href="#glossary" class="nav-link nav-link-top" style="padding-top:14px">Glossary</a></div>
+    <div><a href="#sources" class="nav-link nav-link-top" style="padding-top:6px">Sources &amp; References</a></div>
+  </nav>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- HERO -->
+<section id="overview" class="hero visible">
+  <div class="hero-eyebrow">ISO 20022 · Securities Events · US Market Reference</div>
+  <h1 class="hero-title">ISO 20022 Corporate Actions<br>Field Guide</h1>
+  <p class="hero-sub">A comprehensive reference for back-office operations professionals working at the intersection of DTC and their clients. This guide covers the full messaging standard, from its origins in ISO 7775 through today's SEEV message suite, with a sustained focus on the US market and DTC's implementation.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">15 Message Types<span>Used by DTCC (SR 2025)</span></div>
+    <div class="hero-stat">seev<span>Securities Events — the ISO 20022 business area for all corporate actions messages</span></div>
+    <div class="hero-stat">SR 2025<span>Current standard release; all core messages now on variant .001</span></div>
+    <div class="hero-stat">5 Event Categories<span>Voluntary · MWCO · Mandatory · Redemptions · Income</span></div>
+  </div>
+</section>
+
+<!-- WHAT IS ISO 20022 -->
+<section id="what-is">
+  <div class="eyebrow">Foundation</div>
+  <h2 class="section-title">What Is ISO 20022?</h2>
+  <p class="section-lead">ISO 20022 is an international standard for electronic data interchange between financial institutions. Published in 2004 by ISO Technical Committee TC68, it establishes a formal methodology for defining financial messages using a shared data dictionary, a business process model, and XML-based syntax. For corporate actions, it is the current messaging standard at DTC.</p>
+
+  <p>Think of ISO 20022 as a common language for financial messaging. Where the legacy ISO 15022 standard used proprietary, fixed-length field codes interpreted differently across institutions, ISO 20022 uses structured XML with fully spelled-out element names. A cash dividend under ISO 15022 carries the event type code <strong>DVCA</strong>. Under ISO 20022, the same event is identified as <strong>CashDividend</strong>—unambiguous to any system or operator reading the message.</p>
+
+  <p>The standard covers multiple financial domains: payments, securities settlement, asset servicing, and cash management. For corporate actions, the relevant domain is <strong>Securities Events</strong>, identified by the four-character code <strong>seev</strong>. Every corporate actions message issued by DTC begins with this prefix.</p>
+
+  <div class="callout">
+    <div class="callout-label">MT versus MX</div>
+    <p>ISO 20022 messages are commonly called "MX" messages to distinguish them from legacy "MT" (Message Type) messages defined under ISO 15022. MT564 and MT565 are ISO 15022 messages. CANO and CAIN are ISO 20022 MX messages. Both sets of shorthand appear throughout DTCC and SWIFT documentation; this guide uses both.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-abbrev">XML</div>
+      <div class="card-name">Structured Data Format</div>
+      <div class="card-desc">ISO 20022 messages use Extensible Markup Language. Each element has a defined name, type, and validation rule, enabling precise machine-readable communication with no ambiguity in field interpretation.</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">SWIFT</div>
+      <div class="card-name">Registration Authority</div>
+      <div class="card-desc">SWIFT serves as the ISO 20022 Registration Authority, maintaining the global message catalogue, validating change requests, and overseeing the annual Standard Release (SR) cycle.</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">STP</div>
+      <div class="card-name">Straight-Through Processing</div>
+      <div class="card-desc">The richer, structured data of ISO 20022 enables higher automation rates, reducing the manual intervention and reconciliation burden that characterized processing under legacy formats.</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">SR</div>
+      <div class="card-name">Annual Standard Release</div>
+      <div class="card-desc">Messages are updated through an annual Standard Release cycle. DTCC implements each SR. Version numbers in the MX Identifier may change with each release as field definitions and schemas are updated.</div>
+    </div>
+  </div>
+</section>
+
+<div class="amber-rule"></div>
+
+<!-- EVOLUTION: ISO 7775 -->
+<section id="iso-7775">
+  <div class="eyebrow">The Evolution · Part I</div>
+  <h2 class="section-title">Before ISO 15022: The ISO 7775 Era</h2>
+  <p class="section-lead">Understanding what came before ISO 20022 is the clearest way to appreciate why the migration happened.</p>
+
+  <p>ISO 7775, published in 1987, established the first internationally standardized framework for securities messaging on the SWIFT network. It defined message types and data structures for securities settlement, corporate actions, and related communications during the early period of electronic financial messaging.</p>
+
+  <p>ISO 7775 was a meaningful step forward, but it carried inherent limitations. Field definitions were inconsistently applied across markets. The standard lacked a rigorous underlying data model, which led to different institutions interpreting the same fields differently. As global securities markets grew in complexity and volume through the 1990s, these shortcomings became operationally significant—particularly in corporate actions, where event complexity and the volume of data required to describe an event were both increasing sharply.</p>
+
+  <p>The industry recognized the need for a more rigorous standard built on a formal data model with strict, consistent definitions. That recognition produced ISO 15022.</p>
+</section>
+
+<!-- EVOLUTION: ISO 15022 -->
+<section id="iso-15022">
+  <div class="eyebrow">The Evolution · Part II</div>
+  <h2 class="section-title">ISO 15022 and the MT Message Framework</h2>
+  <p class="section-lead">ISO 15022, published in 1999, replaced ISO 7775 and introduced the MT (Message Type) framework that remains active in bilateral institutional messaging today. For corporate actions, it defined five core message types covering the full event lifecycle.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Message Type</th>
+          <th>Name</th>
+          <th>Purpose</th>
+          <th>Typical Direction</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">MT564</td>
+          <td class="strong">Corporate Action Notification</td>
+          <td>Announces a corporate action event: its type, terms, options, and key dates. The foundational announcement message.</td>
+          <td>Custodian → Client</td>
+        </tr>
+        <tr>
+          <td class="mono">MT565</td>
+          <td class="strong">Corporate Action Instruction</td>
+          <td>Conveys a participant's election or instruction for a voluntary or mandatory-with-choice event.</td>
+          <td>Client → Custodian</td>
+        </tr>
+        <tr>
+          <td class="mono">MT566</td>
+          <td class="strong">Corporate Action Confirmation</td>
+          <td>Confirms that a corporate action has been processed and a securities movement or cash payment has occurred or is pending.</td>
+          <td>Custodian → Client</td>
+        </tr>
+        <tr>
+          <td class="mono">MT567</td>
+          <td class="strong">Corporate Action Status and Processing Advice</td>
+          <td>Provides status information on a corporate action event or a previously received instruction. Serves both event-level and instruction-level status purposes.</td>
+          <td>Custodian → Client</td>
+        </tr>
+        <tr>
+          <td class="mono">MT568</td>
+          <td class="strong">Corporate Action Narrative</td>
+          <td>Provides free-form narrative related to a corporate action event when structured fields in the MT564 cannot carry all required information. Always used in conjunction with an MT564.</td>
+          <td>Custodian → Client</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>ISO 15022's MT framework brought meaningful improvement over ISO 7775, but retained structural limitations. Individual messages were capped at 10,000 bytes, constraining the data any single message could carry. The data model relied heavily on coded qualifiers and abbreviations. Free-form narrative in the MT568 created reconciliation challenges. And as event complexity grew, the MT format increasingly required workarounds for data that did not fit cleanly within defined fields.</p>
+
+  <div class="callout">
+    <div class="callout-label">Still in use</div>
+    <p>ISO 15022 MT messages remain active in bilateral messaging between financial institutions. SWIFT has not established a universal retirement date for the standard in the corporate actions domain; European central securities depositories (CSD) members of the ECSDA have indicated they will not maintain the ISO 15022 format beyond 2030. However, DTC communicates exclusively in ISO 20022 MX messaging for all corporate actions data it distributes to and receives from participants.</p>
+  </div>
+</section>
+
+<!-- EVOLUTION: ISO 20022 Standard -->
+<section id="iso-20022-standard">
+  <div class="eyebrow">The Evolution · Part III</div>
+  <h2 class="section-title">The ISO 20022 Standard</h2>
+  <p class="section-lead">ISO 20022 was published in 2004 by ISO Technical Committee TC68 as a methodologically rigorous replacement for the legacy MT framework. Its adoption across financial markets has been gradual, phased, and ongoing.</p>
+
+  <p>The core innovation of ISO 20022 is its methodology. Rather than defining messages first and constructing a data model afterward, ISO 20022 begins with a formal business process model and derives messages from it. Data elements carry precise, universally agreed definitions—not open to interpretation by individual institutions. The result is a standard where the same field means the same thing everywhere it appears.</p>
+
+  <p>ISO 20022 messages are referred to as "MX" messages and transmitted using XML syntax. The standard is organized into business domains; corporate actions fall within the <strong>seev</strong> domain, Securities Events. The seev message set covers the complete corporate actions lifecycle: announcements, instructions, status advisories, entitlement calculations, and confirmations.</p>
+
+  <p>SWIFT serves as the Registration Authority, receiving, validating, and publishing change requests to the message catalogue. The standard evolves through annual Standard Release cycles. DTCC participates in this process through the Securities Markets Practice Group (SMPG) and the International Securities Association for Institutional Trade Communication (ISITC), proposing and refining changes that reflect US market requirements. Changes are reviewed by the Securities Standards Evaluation Group (CA SEG)—an international body of industry experts—before incorporation into annual releases.</p>
+
+  <p>For the US market, DTC began its formal migration in the early 2010s under the <strong>Corporate Actions Transformation</strong> program. That program is covered in detail in the DTC Integration section of this guide.</p>
+</section>
+
+<!-- TIMELINE -->
+<section id="migration-timeline">
+  <div class="eyebrow">The Evolution · Timeline</div>
+  <h2 class="section-title">Key Milestones</h2>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-year">1987</div>
+      <div class="tl-event">ISO 7775 Published</div>
+      <div class="tl-desc">First internationally standardized framework for securities messaging on SWIFT. Established foundational message types for corporate actions and securities settlement on a global network.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">1999</div>
+      <div class="tl-event">ISO 15022 Published</div>
+      <div class="tl-desc">Replaced ISO 7775 with a more rigorous data model. Introduced MT564, MT565, MT566, MT567, and MT568 as the standard corporate actions message set on the SWIFT FIN network.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2004</div>
+      <div class="tl-event">ISO 20022 Published</div>
+      <div class="tl-desc">ISO Technical Committee TC68 published the new standard, introducing a formal business process modelling methodology and XML-based MX messaging as the foundation for modern financial communications.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2013–2014</div>
+      <div class="tl-event">DTCC CA Transformation Begins</div>
+      <div class="tl-desc">DTCC launched its Corporate Actions Transformation program to migrate all corporate actions processing from legacy proprietary formats to ISO 20022 MX messaging. Technology infrastructure was established and the Corporate Actions Web (CA Web) browser interface was introduced in 2014.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2015</div>
+      <div class="tl-event">Phase 3: Distributions Go Live</div>
+      <div class="tl-desc">DTCC completed Phase 3 of the CA Transformation, covering the full lifecycle of distribution events including cash dividends and principal and interest payments. More than 6,500 clients were migrated to CA Web. For the first time, participants could submit instructions to DTCC electronically via ISO 20022 messaging, replacing a manual process that had previously generated approximately 500,000 annual submissions.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2015–2016</div>
+      <div class="tl-event">Phase 4: Redemptions</div>
+      <div class="tl-desc">ISO 20022 messaging extended to cover the full lifecycle of redemption events, including full and partial calls, scheduled maturities, and put events.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2018–2019</div>
+      <div class="tl-event">Phase 5: Reorganizations Complete</div>
+      <div class="tl-desc">The final phase of the CA Transformation program extended ISO 20022 coverage to voluntary reorganization events including tender offers, exchange offers, and related corporate events. The CA Transformation program was substantially complete by 2019.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">March 2023</div>
+      <div class="tl-event">SWIFT CBPR+ Coexistence Period Begins</div>
+      <div class="tl-desc">SWIFT began the coexistence period for cross-border payments and reporting (CBPR+), enabling ISO 20022 MX messaging alongside MT messages for correspondent banking payments. Note: this timeline governs payments messaging, not corporate actions messaging, which follows DTCC's own implementation schedule.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">SR 2025</div>
+      <div class="tl-event">Variant Standardization</div>
+      <div class="tl-desc">With the SR 2025 release, DTCC moved all core corporate actions messages to variant .001, the main ISO 20022 standard. Previously, DTCC used variant .002—the ISO 15022-compatible subset—to facilitate backward compatibility during the transition period.</div>
+    </div>
+  </div>
+</section>
+
+<div class="amber-rule"></div>
+
+<!-- SEEV: MX IDENTIFIER -->
+<section id="mx-identifier">
+  <div class="eyebrow">SEEV Messages</div>
+  <h2 class="section-title">Reading an MX Identifier</h2>
+  <p class="section-lead">Every ISO 20022 message carries a standardized MX Identifier. Understanding the structure of this identifier is fundamental to working with DTCC documentation, mapping messages to their functions, and tracking version changes across annual Standard Releases.</p>
+
+  <p>The identifier has four parts separated by periods. The example below decodes <strong>seev.031.001.15</strong>, the CANO (Corporate Action Notification) as of SR 2025:</p>
+
+  <div class="id-decoder">
+    <div class="id-seg">
+      <div class="id-chars id-chars-0">seev</div>
+      <div class="id-label">Business Area<br>Securities Events</div>
+    </div>
+    <div class="id-dot">.</div>
+    <div class="id-seg">
+      <div class="id-chars id-chars-1">031</div>
+      <div class="id-label">Message ID<br>CANO</div>
+    </div>
+    <div class="id-dot">.</div>
+    <div class="id-seg">
+      <div class="id-chars id-chars-2">001</div>
+      <div class="id-label">Variant<br>001 = core standard</div>
+    </div>
+    <div class="id-dot">.</div>
+    <div class="id-seg">
+      <div class="id-chars id-chars-3">15</div>
+      <div class="id-label">Version<br>Changes with each SR</div>
+    </div>
+  </div>
+
+  <p>The <strong>business area</strong> "seev" confirms this is a Securities Events message. The <strong>message identifier</strong> "031" maps to the CANO. The <strong>variant</strong> "001" identifies the core ISO standard; as of SR 2025, DTCC uses variant .001 across all core messages. The <strong>version</strong> "15" represents the 15th revision of this message definition—it may increment with each annual release.</p>
+
+  <div class="callout">
+    <div class="callout-label">Variant note: .002 to .001</div>
+    <p>Prior to SR 2025, DTCC used variant .002 across its core corporate actions messages. Variant .002 was the ISO 15022-compatible subset of ISO 20022, designed to ensure backward compatibility during the migration period. SR 2025 moved all DTCC core messages to variant .001. When reviewing older DTCC documentation or historical message logs, you will encounter the .002 variant identifier. The structural change from .002 to .001 represents DTCC's formal departure from the ISO 15022 compatibility requirement.</p>
+  </div>
+</section>
+
+<!-- SEEV: ANNOUNCEMENTS -->
+<section id="announcements">
+  <div class="eyebrow">SEEV Messages · Announcement Group</div>
+  <h2 class="section-title">Announcement Messages</h2>
+  <p class="section-lead">Announcement messages initiate every corporate actions lifecycle. They carry event details from DTC outbound to participants. No announcement message flows inbound from a participant to DTC.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-abbrev">CANO</div>
+      <div class="card-name">Corporate Action Notification</div>
+      <div class="card-seev">seev.031.001.15</div>
+      <div class="card-desc">The primary announcement message. DTC sends the CANO to all eligible participants when a corporate action event is confirmed. It contains the event type, terms, option details and option numbers, key dates (record date, ex date, payment date, instruction deadline), and an indicator of whether ISO 20022 instruction messaging is available for the event. The CANO is the foundational record for the event lifecycle.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">CANO-E</div>
+      <div class="card-name">Corporate Action Notification — Eligible Balance</div>
+      <div class="card-seev">DTC Extension</div>
+      <div class="card-desc">A DTC-specific follow-on to the CANO. Sent after DTC captures participant positions on the position capture date. The CANO-E provides the participant's specific eligible balance and available instruction options for that event. Unlike the CANO, which is broadcast to all eligible participants, the CANO-E is participant-specific. It is the signal that the instruction window is open.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">CACN</div>
+      <div class="card-name">Corporate Action Cancellation Advice</div>
+      <div class="card-seev">seev.039.001.xx</div>
+      <div class="card-desc">Notifies a participant that a previously announced corporate action event has been cancelled. Sent by DTC when an issuer withdraws or cancels an event prior to its completion. References the original CANO via the Corporate Actions Identifier (CAID). Any instructions previously submitted for the cancelled event are voided.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+  </div>
+</section>
+
+<!-- SEEV: INSTRUCTIONS -->
+<section id="instructions">
+  <div class="eyebrow">SEEV Messages · Instruction Group</div>
+  <h2 class="section-title">Instruction Messages</h2>
+  <p class="section-lead">Instruction messages are the only messages in the corporate actions lifecycle that flow inbound from participant to DTC. They are used exclusively for events requiring a participant election: voluntary events and mandatory-with-choice events.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-abbrev">CAIN</div>
+      <div class="card-name">Corporate Action Instruction</div>
+      <div class="card-seev">seev.033.001.13</div>
+      <div class="card-desc">The primary instruction message. Sent by a participant to DTC to communicate an election for a corporate action event. A CAIN specifies the option number chosen (as defined in the CANO) and the quantity of eligible securities being tendered or elected. A CAIN may be submitted multiple times during the instruction period; the last valid submission before the cutoff governs.</div>
+      <div class="card-dir inbound">Participant &rarr; DTC</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">CAIC</div>
+      <div class="card-name">Corporate Action Instruction Cancellation Request</div>
+      <div class="card-seev">seev.040.001.xx</div>
+      <div class="card-desc">Sent by a participant to cancel a previously submitted CAIN prior to the instruction deadline. References the original CAIN by its transaction identifier. DTC responds with a CACS confirming or rejecting the cancellation. If the cancellation is accepted, the original instruction is voided and the participant must resubmit a new CAIN if they wish to maintain an election.</div>
+      <div class="card-dir inbound">Participant &rarr; DTC</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Instruction window</div>
+    <p>The instruction period is defined in the CANO by the instruction deadline (cutoff). Once the cutoff passes, DTC closes the instruction window and no further CAINs are accepted. For voluntary events, positions not covered by a valid CAIN before cutoff are not tendered and receive no processing. For mandatory-with-choice events, uncovered positions are processed under the default option identified in the CANO.</p>
+  </div>
+</section>
+
+<!-- SEEV: STATUS -->
+<section id="status-messages">
+  <div class="eyebrow">SEEV Messages · Status Group</div>
+  <h2 class="section-title">Status Messages</h2>
+  <p class="section-lead">Status messages flow from DTC to participants, confirming receipt and disposition of instructions, reporting event-level processing status, and providing statement-level reporting on instruction positions ahead of the deadline.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-abbrev">CAIS</div>
+      <div class="card-name">Corporate Action Instruction Status Advice</div>
+      <div class="card-seev">seev.034.001.14</div>
+      <div class="card-desc">DTC's response to a received CAIN. Informs the participant whether the instruction was accepted, held as pending, or rejected, and provides the reason code for any rejection. A participant who receives a rejection must submit a corrected CAIN within the instruction period to have their election recorded.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">CACS</div>
+      <div class="card-name">Corporate Action Instruction Cancellation Request Status Advice</div>
+      <div class="card-seev">seev.041.001.xx</div>
+      <div class="card-desc">DTC's response to a CAIC. Confirms whether the cancellation request was accepted or rejected. If accepted, the original CAIN is voided and the position reverts to uninstructed. If rejected, the original instruction remains in force.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">CAPS</div>
+      <div class="card-name">Corporate Action Event Processing Status Advice</div>
+      <div class="card-seev">seev.032.001.08</div>
+      <div class="card-desc">Provides status information at the event level rather than the instruction level. Used by DTC to communicate lifecycle changes affecting all participants holding the security—such as event extensions, withdrawal of an event, or changes in event processing status. Distinguished from CAIS, which is instruction-specific.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">CAST</div>
+      <div class="card-name">Corporate Action Instruction Statement Report</div>
+      <div class="card-seev">DTC-specific</div>
+      <div class="card-desc">A DTC-specific reporting message sent in the days approaching the instruction deadline: from cutoff minus five through cutoff minus one. Provides a running statement of all instructions DTC has on record for that participant for a given event. Used for pre-cutoff reconciliation to ensure submitted positions match expectations before the window closes.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">ACK / NAK</div>
+    <p>When a participant submits a CAIN, DTC performs an initial schema and subscription validation before issuing a CAIS. If the message fails technical format validation, DTC returns a NAK (Not Acknowledged). A NAK is a technical failure, not a business-level rejection—it means the message did not pass schema or subscription checks. An ACK confirms the message was received and queued for processing. The subsequent CAIS then communicates the business-level outcome: accepted, pending, or rejected.</p>
+  </div>
+</section>
+
+<!-- SEEV: ENTITLEMENTS -->
+<section id="entitlements">
+  <div class="eyebrow">SEEV Messages · Entitlement Group</div>
+  <h2 class="section-title">Entitlement &amp; Confirmation Messages</h2>
+  <p class="section-lead">Entitlement and confirmation messages communicate the financial results of a corporate action. They cover projected allocations before the payable date, final confirmations after processing, and reversals when a confirmed movement must be unwound.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-abbrev">CAPA</div>
+      <div class="card-name">Corporate Action Movement Preliminary Advice</div>
+      <div class="card-seev">seev.035.001.xx</div>
+      <div class="card-desc">A projected payment or allocation sent before the payable date. The CAPA communicates what a participant is expected to receive based on eligible positions, event terms, and (where applicable) submitted instructions. CAPA projections may be updated if event terms change prior to the payable date. Projection amounts of zero are valid—for example, when a rate has not yet been announced at the time of initial projection.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">CAPC</div>
+      <div class="card-name">Corporate Action Movement Preliminary Advice Cancellation Advice</div>
+      <div class="card-seev">seev.044.001.xx</div>
+      <div class="card-desc">Cancels a previously issued CAPA. Sent when DTC needs to retract a preliminary projection, typically due to a change in event terms or an event cancellation. References the original CAPA via the CAID. A new CAPA may follow if updated projection data becomes available.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">CACO</div>
+      <div class="card-name">Corporate Action Movement Confirmation Advice</div>
+      <div class="card-seev">seev.036.001.14</div>
+      <div class="card-desc">The final confirmation message. Sent by DTC after processing is complete to confirm the actual cash or securities movement to the participant's account. The CACO is the definitive record of entitlement and payment. It does not reproduce all CANO content; instead, it references the event via the CAID and COAF identifiers, keeping the message focused on movement data.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">CARE</div>
+      <div class="card-name">Corporate Action Movement Reversal Advice</div>
+      <div class="card-seev">seev.037.001.xx</div>
+      <div class="card-desc">Notifies a participant that a previously confirmed movement has been reversed. Sent by DTC in situations where a confirmed corporate action must be unwound—for example, due to a failed settlement, event error, or post-payment adjustment. References the original CACO and specifies the reason for the reversal.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+  </div>
+</section>
+
+<!-- SEEV: MEETINGS -->
+<section id="meetings">
+  <div class="eyebrow">SEEV Messages · Meetings</div>
+  <h2 class="section-title">Meeting Messages</h2>
+  <p class="section-lead">DTCC uses two meeting-specific messages for shareholder meeting notification and cancellation. These operate separately from the standard event lifecycle messages and are not part of the entitlement or instruction flows described above.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-abbrev">MTNO</div>
+      <div class="card-name">Meeting Notification</div>
+      <div class="card-seev">seev.001 series</div>
+      <div class="card-desc">Notifies eligible participants of a shareholder meeting, including meeting type, date, agenda items, and voting options. Used for annual general meetings (AGMs), extraordinary general meetings (EGMs), and other shareholder votes. Provides the information participants need to submit proxies or voting instructions.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+    <div class="card">
+      <div class="card-abbrev">MTCN</div>
+      <div class="card-name">Meeting Cancellation</div>
+      <div class="card-seev">seev.002 series</div>
+      <div class="card-desc">Notifies participants that a previously announced shareholder meeting has been cancelled or postponed. References the original MTNO. All voting instructions or proxy submissions previously submitted for the cancelled meeting are voided.</div>
+      <div class="card-dir">DTC &rarr; Participant</div>
+    </div>
+  </div>
+</section>
+
+<div class="amber-rule"></div>
+
+<!-- MT TO MX MAPPING -->
+<section id="mt-mx-mapping">
+  <div class="eyebrow">Reference</div>
+  <h2 class="section-title">MT to MX Mapping</h2>
+  <p class="section-lead">The table below maps the legacy ISO 15022 MT message types to their ISO 20022 MX equivalents. Staff familiar with MT messages can use this as a translation key when working with DTCC documentation or SWIFT corporate actions materials.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Legacy MT</th>
+          <th>Legacy Name</th>
+          <th>ISO 20022 Equivalent(s)</th>
+          <th>MX Code(s)</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">MT564</td>
+          <td class="strong">Corporate Action Notification</td>
+          <td class="mono">seev.031 (CANO)</td>
+          <td class="mono">CANO</td>
+          <td class="note">The MT564 and MT568 together map to the single CANO. ISO 20022 consolidates the free-form narrative of the MT568 into structured fields within the CANO, eliminating the need for a separate narrative message in the majority of events.</td>
+        </tr>
+        <tr>
+          <td class="mono">MT568</td>
+          <td class="strong">Corporate Action Narrative</td>
+          <td class="mono">seev.031 (CANO)</td>
+          <td class="mono">CANO</td>
+          <td class="note">The MT568's unstructured narrative is replaced by defined XML fields within the CANO. Information that previously required free-form text is now carried in machine-readable, validated fields—one of the clearest practical improvements ISO 20022 delivers over ISO 15022.</td>
+        </tr>
+        <tr>
+          <td class="mono">MT565</td>
+          <td class="strong">Corporate Action Instruction</td>
+          <td class="mono">seev.033 (CAIN)<br>seev.040 (CAIC)</td>
+          <td class="mono">CAIN<br>CAIC</td>
+          <td class="note">The MT565 served dual purposes: submitting an instruction and cancelling a prior instruction. ISO 20022 separates these into dedicated messages, improving clarity and reducing the processing ambiguity that arose from overloading a single message type with two distinct business functions.</td>
+        </tr>
+        <tr>
+          <td class="mono">MT566</td>
+          <td class="strong">Corporate Action Confirmation</td>
+          <td class="mono">seev.035 (CAPA)<br>seev.036 (CACO)<br>seev.037 (CARE)</td>
+          <td class="mono">CAPA<br>CACO<br>CARE</td>
+          <td class="note">The MT566 covered both preliminary advices and final confirmations. ISO 20022 separates preliminary advice (CAPA) from final confirmation (CACO) and introduces a dedicated reversal message (CARE) that had no clean MT equivalent, requiring workarounds in ISO 15022 practice.</td>
+        </tr>
+        <tr>
+          <td class="mono">MT567</td>
+          <td class="strong">Corporate Action Status and Processing Advice</td>
+          <td class="mono">seev.032 (CAPS)<br>seev.034 (CAIS)<br>seev.041 (CACS)</td>
+          <td class="mono">CAPS<br>CAIS<br>CACS</td>
+          <td class="note">The MT567 handled multiple status functions: event-level status, instruction status, and instruction cancellation status. ISO 20022 assigns each a distinct message—CAPS for event-level status, CAIS for instruction status, CACS for instruction cancellation status. This separation enables more precise automated processing of status flows.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Two ISO 20022 messages used by DTCC have no direct MT predecessor: CANO-E (the participant-specific eligible balance notification) and CAST (the instruction statement report). Both represent capabilities that were either delivered through legacy proprietary DTC formats or were not available in structured form under ISO 15022.</p>
+</section>
+
+<div class="amber-rule"></div>
+
+<!-- EVENT PLAYBOOKS: VOLUNTARY -->
+<section id="voluntary">
+  <div class="eyebrow">Event Playbooks · I</div>
+  <h2 class="section-title">Voluntary Events</h2>
+  <p class="section-lead">Voluntary events require affirmative action from a participant to participate. If no instruction is received prior to the deadline, the participant does not participate in the event and no processing occurs for that position.</p>
+
+  <p>Common voluntary events in the US market include tender offers, exchange offers, rights exercises, subscription offers, and warrant exercises. As a DTC participant sitting between your clients and DTC, participation in a voluntary event depends entirely on submitting a timely and valid CAIN before the DTC instruction deadline. Late instructions—submitted after cutoff—are not accepted regardless of circumstance.</p>
+
+  <p>The CANO announces the event and specifies option numbers. The CANO-E, distributed after DTC captures your eligible position, confirms your specific balance available for election. These two messages provide everything needed to construct and submit a CAIN.</p>
+
+  <div class="flow-diagram">
+    <div class="flow-title">Voluntary Event — Full Message Lifecycle</div>
+    <div class="flow-actors">
+      <div class="flow-actor flow-actor-dtc">DTC — Outbound</div>
+      <div class="flow-actor flow-actor-par">Participant — Inbound</div>
+    </div>
+    <div class="flow-rows">
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CANO</div>
+          <div class="flow-desc">Event terms, options &amp; dates announced</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CANO-E</div>
+          <div class="flow-desc">Eligible balance confirmed</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+        <div class="flow-arrow flow-arrow-left"><div class="flow-arrow-line"></div><div class="flow-dir">Participant &rarr; DTC</div></div>
+        <div class="flow-cell par">
+          <div class="flow-code">CAIN</div>
+          <div class="flow-desc">Election submitted</div>
+        </div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CAIS</div>
+          <div class="flow-desc">Instruction accepted, pending, or rejected</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CAST</div>
+          <div class="flow-desc">Statement report (cutoff -5 through -1)</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CAPA</div>
+          <div class="flow-desc">Preliminary allocation projected</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CACO</div>
+          <div class="flow-desc">Final movement confirmed</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <p>Note that CAIN may be submitted and revised multiple times during the instruction window. Each submission generates a CAIS response. The last accepted CAIN on file before cutoff governs the election. The CAST reports in the days before cutoff allow participants to verify that DTC's records match the intended election before the window closes.</p>
+</section>
+
+<!-- EVENT PLAYBOOKS: MWCO -->
+<section id="mwco">
+  <div class="eyebrow">Event Playbooks · II</div>
+  <h2 class="section-title">Mandatory with Choice Events</h2>
+  <p class="section-lead">Mandatory-with-choice events will be processed for all eligible positions regardless of whether an instruction is received. The distinction from a purely voluntary event is the presence of a default option: if no CAIN is submitted by the deadline, the participant's position is processed under the default option specified in the CANO.</p>
+
+  <p>Common mandatory-with-choice events in the US market include dividend reinvestment plans (DRIPs) where shareholders may elect cash instead of stock, and stock/cash elections in mergers where shareholders choose the form of consideration. Every eligible holder receives a result. The instruction governs which option applies to a given position, not whether processing occurs at all.</p>
+
+  <p>The message flow for mandatory-with-choice events is structurally identical to voluntary events. The operational distinction lies in the CANO itself, which identifies a default option number. DTC processes all uninstructed positions against that default after cutoff.</p>
+
+  <div class="flow-diagram">
+    <div class="flow-title">Mandatory with Choice — Full Message Lifecycle</div>
+    <div class="flow-actors">
+      <div class="flow-actor flow-actor-dtc">DTC — Outbound</div>
+      <div class="flow-actor flow-actor-par">Participant — Inbound</div>
+    </div>
+    <div class="flow-rows">
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CANO</div>
+          <div class="flow-desc">Event + default option announced</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CANO-E</div>
+          <div class="flow-desc">Eligible balance confirmed</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+        <div class="flow-arrow flow-arrow-left"><div class="flow-arrow-line"></div><div class="flow-dir">Participant &rarr; DTC (optional)</div></div>
+        <div class="flow-cell par">
+          <div class="flow-code">CAIN</div>
+          <div class="flow-desc">Non-default election (if desired)</div>
+        </div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CAIS</div>
+          <div class="flow-desc">Status (if CAIN submitted)</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CAPA</div>
+          <div class="flow-desc">Preliminary allocation (all positions)</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CACO</div>
+          <div class="flow-desc">Final confirmation (all positions)</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENT PLAYBOOKS: MANDATORY -->
+<section id="mandatory">
+  <div class="eyebrow">Event Playbooks · III</div>
+  <h2 class="section-title">Mandatory Events</h2>
+  <p class="section-lead">Mandatory events require no instruction from participants. DTC processes them automatically for all eligible positions. There is no instruction window, no CAIN, and no CAIS in the standard flow.</p>
+
+  <p>Common mandatory events in the US market include stock splits, reverse stock splits, cash dividends where no reinvestment option is offered, spin-offs, completed mergers where all shareholders receive uniform consideration, and name changes. The event occurs for every eligible holder. The participant's role is to receive the CANO, reconcile the CAPA projection against expected entitlements, and confirm the CACO against settlement records.</p>
+
+  <div class="flow-diagram">
+    <div class="flow-title">Mandatory Event — Message Lifecycle</div>
+    <div class="flow-actors">
+      <div class="flow-actor flow-actor-dtc">DTC — Outbound</div>
+      <div class="flow-actor flow-actor-par">Participant</div>
+    </div>
+    <div class="flow-rows">
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CANO</div>
+          <div class="flow-desc">Event announced; no instruction required</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CAPA</div>
+          <div class="flow-desc">Projected entitlement</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CACO</div>
+          <div class="flow-desc">Final confirmation of movement</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <p>For mandatory events, the flow is announce, project, and confirm. Exceptions—event cancellations, reversals, or term changes—introduce CACN, CAPC, or CARE into the lifecycle, but these are exception paths, not the standard route.</p>
+</section>
+
+<!-- EVENT PLAYBOOKS: REDEMPTIONS -->
+<section id="redemptions">
+  <div class="eyebrow">Event Playbooks · IV</div>
+  <h2 class="section-title">Redemptions</h2>
+  <p class="section-lead">Redemptions cover full and partial calls, scheduled maturities, and puts. They are primarily associated with fixed income securities—bonds, notes, and preferred instruments. Some redemptions are fully mandatory; others involve an instructable component where participants designate which positions to present.</p>
+
+  <p>For a full mandatory call or scheduled maturity, the message flow mirrors the mandatory event structure: CANO announces the redemption, CAPA projects the principal proceeds, and CACO confirms the payment. All eligible principal is redeemed without participant instruction.</p>
+
+  <p>For partial calls, the event may require participant instruction if the call is applied to specific positions or if DTC uses a lottery or pro-rata allocation methodology. In those cases, the lifecycle incorporates CANO-E, CAIN, and CAIS. The CANO will indicate whether the redemption event is eligible for ISO 20022 instruction messaging.</p>
+
+  <div class="flow-diagram">
+    <div class="flow-title">Redemption (Instructable Portion) — Message Lifecycle</div>
+    <div class="flow-actors">
+      <div class="flow-actor flow-actor-dtc">DTC — Outbound</div>
+      <div class="flow-actor flow-actor-par">Participant — Inbound</div>
+    </div>
+    <div class="flow-rows">
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CANO</div>
+          <div class="flow-desc">Redemption announced</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CANO-E</div>
+          <div class="flow-desc">Eligible balance confirmed</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+        <div class="flow-arrow flow-arrow-left"><div class="flow-arrow-line"></div><div class="flow-dir">Participant &rarr; DTC</div></div>
+        <div class="flow-cell par">
+          <div class="flow-code">CAIN</div>
+          <div class="flow-desc">Position presented for redemption</div>
+        </div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CAIS</div>
+          <div class="flow-desc">Instruction status</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CAPA</div>
+          <div class="flow-desc">Preliminary redemption proceeds</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CACO</div>
+          <div class="flow-desc">Redemption proceeds confirmed</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENT PLAYBOOKS: INCOME -->
+<section id="income">
+  <div class="eyebrow">Event Playbooks · V</div>
+  <h2 class="section-title">Income &amp; Distributions</h2>
+  <p class="section-lead">Income and distribution events include cash dividends, principal and interest (P&amp;I) payments on fixed income securities, and other cash distributions. These are fully mandatory events. DTC calculates and distributes entitlements automatically based on eligible positions on the record date. No instruction is required or accepted.</p>
+
+  <p>Income events were the first category to go live under DTCC's CA Transformation program. Phase 3, completed in 2015, covered the full distribution lifecycle. The message flow is the most streamlined in the corporate actions suite.</p>
+
+  <p>The entitlement and allocation messages in this lifecycle—CAPA projections and CACO confirmations—are designed to be more compact than the CANO. They do not reproduce the full event details from the original announcement. Instead, they reference the event through the CAID and COAF identifiers, keeping each message focused on the specific movement data it is communicating.</p>
+
+  <div class="flow-diagram">
+    <div class="flow-title">Income / Distribution — Message Lifecycle</div>
+    <div class="flow-actors">
+      <div class="flow-actor flow-actor-dtc">DTC — Outbound</div>
+      <div class="flow-actor flow-actor-par">Participant</div>
+    </div>
+    <div class="flow-rows">
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CANO</div>
+          <div class="flow-desc">Distribution announced; record date, rate, pay date</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CAPA</div>
+          <div class="flow-desc">Projected entitlement based on position</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-cell dtc">
+          <div class="flow-code">CACO</div>
+          <div class="flow-desc">Payment confirmed</div>
+        </div>
+        <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
+        <div class="flow-cell empty"><div class="flow-code">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Real-time vs. end-of-day batch</div>
+    <p>One of the concrete operational improvements ISO 20022 delivered for income processing at DTC is real-time messaging. Under the legacy proprietary DTC file formats (CCF files), participants received data in end-of-day batch files. ISO 20022 messaging is delivered in real time via IBM MQ, allowing participants to receive CANO announcements, CAPA projections, and CACO confirmations as they are generated—not at the end of a batch cycle.</p>
+  </div>
+</section>
+
+<div class="amber-rule"></div>
+
+<!-- DTC: CA TRANSFORMATION -->
+<section id="ca-transformation">
+  <div class="eyebrow">DTC Integration</div>
+  <h2 class="section-title">The CA Transformation Program</h2>
+  <p class="section-lead">DTCC's Corporate Actions Transformation program was the multi-year initiative that brought ISO 20022 messaging to US market corporate actions processing. Understanding its history clarifies design decisions visible in the current system.</p>
+
+  <p>The program was driven by two realities. First, the global financial industry was converging on ISO 20022 as the common messaging language, and DTC's participants had expanded into global businesses requiring streamlined, internationally recognized communication standards. Second, the proprietary formats DTC had maintained since its founding in 1973 were not aligned with where the industry was heading. DTC worked with SMPG and ISITC throughout the program to propose changes to the ISO 20022 standard that reflected US market requirements, ensuring that DTC's implementation contributed to the global standard rather than simply adapting to it.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Phase</th>
+          <th>Event Category</th>
+          <th>Timeline</th>
+          <th>Key Deliverable</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">1 – 2</td>
+          <td class="strong">Foundation &amp; CA Web</td>
+          <td>2013 – 2014</td>
+          <td>Technology infrastructure established for ISO 20022 messaging. CA Web browser interface launched in 2014 as a consolidated replacement for legacy PTS/PBS systems. Announcement messaging capability deployed.</td>
+        </tr>
+        <tr>
+          <td class="mono">3</td>
+          <td class="strong">Distributions</td>
+          <td>2015</td>
+          <td>Full lifecycle messaging for cash dividends, P&amp;I, and other distributions. First availability of ISO 20022 electronic instruction messaging for participants. More than 6,500 clients migrated to CA Web. Approximately 500,000 distribution instructions processed annually at that time were converted from manual to electronic submission.</td>
+        </tr>
+        <tr>
+          <td class="mono">4</td>
+          <td class="strong">Redemptions</td>
+          <td>2015 – 2016</td>
+          <td>ISO 20022 messaging extended to cover the full lifecycle of redemption events including full and partial calls, scheduled maturities, and put events.</td>
+        </tr>
+        <tr>
+          <td class="mono">5</td>
+          <td class="strong">Reorganizations</td>
+          <td>2018 – 2019</td>
+          <td>Voluntary reorganization instruction messaging deployed, covering tender offers, exchange offers, and related events. CA Transformation program substantially complete.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- DTC: CA WEB -->
+<section id="ca-web">
+  <div class="eyebrow">DTC Integration · CA Web</div>
+  <h2 class="section-title">Corporate Actions Web (CA Web)</h2>
+  <p class="section-lead">CA Web is DTC's browser-based platform for corporate actions processing. It provides a user interface for participants who need to view, manage, and respond to corporate actions. However, its scope has a significant and operationally critical boundary that every team member should understand clearly.</p>
+
+  <p>CA Web consolidated the distributions and redemptions lifecycle functionality that had previously been spread across legacy Participant Terminal System (PTS) and Participant Browser System (PBS) screens. For those event categories, participants may use CA Web directly, ISO 20022 MQ messaging, or a combination of both.</p>
+
+  <p><strong>Voluntary reorganization instruction input is not available on CA Web.</strong> The DTCC Reorganizations Service Guide (updated March 2026) states this explicitly: "With the exception of voluntary reorganization instruction input, the Reorganization services concerning reorganization processing can be accessed on CA Web. Functionality for input of voluntary reorganization instructions can be accomplished via associated PTS and PBS functions, as well as via ISO 20022 messaging and APIs." Voluntary reorg instructions—including ATOP-eligible tender and exchange offers, rights subscriptions, and warrant exercises—must go through PTS PTOP, PBS Voluntary Tenders and Exchanges, or ISO 20022 Automated Instruction Messaging (CAIN via MQ).</p>
+
+  <p>For ATOP-eligible offers, the requirement is absolute. The Service Guide states that instructions submitted outside of PTS PTOP, PBS Voluntary Tenders and Exchanges, or Automated Instruction Messaging will not be accepted and will be rejected if submitted. CA Web can be used to <em>view</em> voluntary reorganization announcements and event details through its inquiry functions—but instruction submission for those events is not a CA Web capability.</p>
+
+  <div class="callout">
+    <div class="callout-label">Channel summary by event category</div>
+    <p>Distributions: CA Web, ISO 20022 MQ, or both. Redemptions: CA Web, ISO 20022 MQ, or both. Voluntary reorganizations (tender offers, exchange offers, rights subscriptions, warrant exercises): PTS PTOP, PBS Voluntary Tenders and Exchanges, or ISO 20022 Automated Instruction Messaging only. CA Web is used for announcement inquiry on reorg events, not for instruction input.</p>
+  </div>
+
+  <p>The DTCC Learning Center (dtcclearning.com) provides CA Web webinars, e-learning modules, and scenario-based guides for each event category. These resources are available to registered participants and complement the technical message specifications published on DTCC's corporate website.</p>
+</section>
+
+<!-- DTC: US EXTENSIONS -->
+<section id="us-extensions">
+  <div class="eyebrow">DTC Integration · Extensions</div>
+  <h2 class="section-title">US Market Extensions</h2>
+  <p class="section-lead">ISO 20022 is a global standard, and not every data element required by the US market is defined within the core message schemas. DTCC addresses this through a "supplementary data" mechanism known as extensions.</p>
+
+  <p>Extensions are additional data structures appended to standard ISO 20022 messages to carry US market-specific information. They are not arbitrary additions. Extensions must be validated by the ISO 20022 community and formally registered in the ISO 20022 standard repository before DTCC may use them in production messages.</p>
+
+  <p>Examples of data carried in DTCC extensions include US market-specific tax indicators, processing codes, and event-type details for which no corresponding field exists in the global message definition. The Message Usage Guidelines and schema specifications available on DTCC's ISO 20022 Messaging Specifications page document the extension structure and field requirements for each message type.</p>
+
+  <div class="callout">
+    <div class="callout-label">Two key event identifiers</div>
+    <p>Every DTC corporate actions message references two identifiers that link lifecycle messages back to the original announcement. The <strong>CAID (Corporate Actions Identifier)</strong> is DTC's internal numeric identifier, assigned when the event is created in DTC's systems. The <strong>COAF (Official Corporate Action Event Identification)</strong> is the global cross-market identifier used for referencing the same event across different institutions. CAPA and CACO messages reference both identifiers rather than reproducing full CANO content, keeping downstream messages compact and focused. Understanding how to read and reconcile these identifiers is fundamental to tracking a corporate action across its full message lifecycle.</p>
+  </div>
+</section>
+
+<!-- DTC: CURRENT LANDSCAPE -->
+<section id="current-landscape">
+  <div class="eyebrow">DTC Integration · Current Landscape</div>
+  <h2 class="section-title">Current Landscape</h2>
+  <p class="section-lead">As of the SR 2025 release, DTCC's corporate actions ISO 20022 messaging framework covers the full event lifecycle for distributions, redemptions, and reorganizations across all major event categories.</p>
+
+  <p>The SR 2025 release marked a structural milestone: all core messages were moved from variant .002 (the ISO 15022-compatible subset) to variant .001 (the main ISO 20022 standard). This represents DTCC's formal departure from the backward-compatibility requirement that had been maintained since the early phases of the CA Transformation. It signals industry confidence in ISO 20022 as the settled standard for US market corporate actions messaging.</p>
+
+  <p>DTCC continues to publish annual updates through the Standard Release cycle. Current SR message schemas, implementation documentation, and user guides are available on the DTCC website's ISO 20022 Messaging Specifications page. The DTCC Learning Center also provides regularly updated scenario-based guides covering each event category and message type.</p>
+
+  <p>For participants still using legacy proprietary DTC file formats such as CCF (Corporate Communications File) announcement files, DTCC has progressively reduced the availability of those formats. ISO 20022 MX messaging is the intended long-term standard for corporate actions communication at DTC.</p>
+
+  <div class="callout">
+    <div class="callout-label">Settlement modernization — a parallel stream</div>
+    <p>DTCC's modernization extends beyond corporate actions into settlement infrastructure. A separate Clearing and Settlement Transformation roadmap covers ISO 20022 adoption for settlement processing under a phased schedule running through 2026 and 2027. Current legacy transactional formats for settlement are targeted for decommission in Q3 2027. Corporate actions and settlement represent distinct implementation streams, but both are converging on ISO 20022 as the common standard across DTCC's participant-facing infrastructure.</p>
+  </div>
+</section>
+
+<div class="amber-rule"></div>
+
+<!-- GLOSSARY -->
+<section id="glossary">
+  <div class="eyebrow">Reference</div>
+  <h2 class="section-title">Glossary</h2>
+  <p class="section-lead">Key terms used throughout this guide and in DTCC and SWIFT corporate actions documentation.</p>
+
+  <div class="glossary-grid">
+    <div class="gl-item"><div class="gl-term">ACK / NAK</div><div class="gl-def">Acknowledged / Not Acknowledged. DTC's initial response to any inbound message. A NAK signals a technical validation failure—schema or subscription error—not a business-level rejection. An ACK confirms the message was received for processing; the subsequent CAIS carries the business outcome.</div></div>
+
+    <div class="gl-item"><div class="gl-term">CAID</div><div class="gl-def">Corporate Actions Identifier. DTC's internal numeric identifier assigned to each corporate action event at creation. Used across all lifecycle messages to link CAPA, CACO, and CARE back to the original CANO.</div></div>
+
+    <div class="gl-item"><div class="gl-term">CA Transformation</div><div class="gl-def">DTCC's phased program to migrate all corporate actions processing from legacy proprietary formats to ISO 20022 MX messaging. Executed in five phases from approximately 2013 to 2019.</div></div>
+
+    <div class="gl-item"><div class="gl-term">CA Web</div><div class="gl-def">Corporate Actions Web. DTC's browser-based platform for viewing and managing corporate action events. Launched during Phase 2 of the CA Transformation as a consolidated replacement for legacy PTS and PBS systems.</div></div>
+
+    <div class="gl-item"><div class="gl-term">CAJWG</div><div class="gl-def">Corporate Actions Joint Working Group. The industry group within SMPG responsible for developing and maintaining global market practice principles for ISO 20022 corporate actions messaging.</div></div>
+
+    <div class="gl-item"><div class="gl-term">CBPR+</div><div class="gl-def">Cross-Border Payments and Reporting Plus. SWIFT's usage guidelines governing ISO 20022 message usage for cross-border payments on the SWIFT network. Governs payments messaging, not securities event or corporate actions messaging.</div></div>
+
+    <div class="gl-item"><div class="gl-term">CCF</div><div class="gl-def">Corporate Communications File. The legacy proprietary DTC batch file format used for announcing and reporting corporate action events prior to ISO 20022 adoption. End-of-day batch delivery; now being phased out in favor of real-time ISO 20022 MQ messaging.</div></div>
+
+    <div class="gl-item"><div class="gl-term">COAF</div><div class="gl-def">Official Corporate Action Event Identification. The globally recognized event identifier used to cross-reference the same corporate action across different institutions. Complements the DTC-specific CAID in all lifecycle messages.</div></div>
+
+    <div class="gl-item"><div class="gl-term">Extension</div><div class="gl-def">A supplementary data structure appended to a standard ISO 20022 message to carry data elements not defined in the core global schema. DTCC uses extensions for US market-specific data. Extensions must be formally registered with the ISO 20022 repository before use.</div></div>
+
+    <div class="gl-item"><div class="gl-term">FIN / FINplus</div><div class="gl-def">SWIFT's legacy MT messaging service (FIN) and its MX-capable successor (FINplus). MT messages travel over FIN; MX messages travel over FINplus. DTCC uses IBM MQ rather than SWIFT FINplus for its participant-facing ISO 20022 messaging.</div></div>
+
+    <div class="gl-item"><div class="gl-term">ISO 15022</div><div class="gl-def">International standard published in 1999 that defined the MT messaging framework for securities markets. Replaced ISO 7775. Defines MT564 through MT568 for corporate actions. Currently in coexistence with ISO 20022 in bilateral institutional messaging; no universal SWIFT retirement date has been set for the corporate actions domain.</div></div>
+
+    <div class="gl-item"><div class="gl-term">ISO 20022</div><div class="gl-def">International standard published in 2004 by ISO Technical Committee TC68. Defines a modelling methodology and XML-based message format for financial communications across payments, securities, and other domains. The current standard for all DTC corporate actions messaging.</div></div>
+
+    <div class="gl-item"><div class="gl-term">ISITC</div><div class="gl-def">International Securities Association for Institutional Trade Communication. An industry group that develops market practice standards for securities processing. Contributed US market input into the ISO 20022 corporate actions standard during the CA Transformation program.</div></div>
+
+    <div class="gl-item"><div class="gl-term">Mandatory Event</div><div class="gl-def">A corporate action processed automatically for all eligible positions without requiring participant instruction. Examples: stock splits, cash dividends, completed mergers with uniform consideration. No CAIN is submitted; DTC generates CAPA and CACO based on eligible positions.</div></div>
+
+    <div class="gl-item"><div class="gl-term">Mandatory with Choice (MWCO)</div><div class="gl-def">A corporate action processed for all eligible positions with a defined default option. Participants may submit a CAIN to elect a non-default option. Without a CAIN, DTC processes the position against the default specified in the CANO. Examples: DRIPs, stock/cash elections in mergers.</div></div>
+
+    <div class="gl-item"><div class="gl-term">MQ Messaging</div><div class="gl-def">IBM MQ (Message Queue). The messaging middleware used by DTC for real-time delivery of ISO 20022 messages to and from participants. Replaced the end-of-day batch file model used under legacy proprietary CCF formats.</div></div>
+
+    <div class="gl-item"><div class="gl-term">MT / MX</div><div class="gl-def">Message Type (MT) refers to ISO 15022 messages transmitted on the SWIFT FIN network (e.g., MT564). MX refers to ISO 20022 messages transmitted in XML format. MX is used informally to distinguish the new standard from legacy MT messages.</div></div>
+
+    <div class="gl-item"><div class="gl-term">MX Identifier</div><div class="gl-def">The four-part identifier for an ISO 20022 message: BusinessArea.MessageID.Variant.Version (e.g., seev.031.001.15). Each segment carries specific meaning about the message's domain, function, variant, and release version.</div></div>
+
+    <div class="gl-item"><div class="gl-term">seev</div><div class="gl-def">Securities Events. The ISO 20022 business area prefix for corporate actions messages. All DTCC corporate actions messages begin with "seev" in their MX Identifier.</div></div>
+
+    <div class="gl-item"><div class="gl-term">SMPG</div><div class="gl-def">Securities Markets Practice Group. An international group of securities market practitioners that develops global market practice recommendations for ISO 20022 securities messaging, including corporate actions.</div></div>
+
+    <div class="gl-item"><div class="gl-term">SR (Standard Release)</div><div class="gl-def">The annual maintenance release cycle for ISO 20022 messages, managed by SWIFT as Registration Authority. Each SR may introduce new message versions, field definition changes, or structural updates. DTCC implements each annual SR; version numbers in MX Identifiers may change with each release.</div></div>
+
+    <div class="gl-item"><div class="gl-term">STP</div><div class="gl-def">Straight-Through Processing. Automated, end-to-end transaction processing without manual intervention. ISO 20022's structured data enables higher STP rates than legacy MT messaging by reducing field ambiguity and enabling more precise validation rules.</div></div>
+
+    <div class="gl-item"><div class="gl-term">Variant</div><div class="gl-def">The third segment of an MX Identifier. Variant .001 is the main ISO 20022 standard message. Variant .002 was the ISO 15022-compatible subset used by DTCC prior to SR 2025 to maintain backward compatibility. As of SR 2025, all DTCC core messages use variant .001.</div></div>
+
+    <div class="gl-item"><div class="gl-term">Voluntary Event</div><div class="gl-def">A corporate action requiring affirmative participant instruction to take effect. If no CAIN is submitted before the instruction deadline, no processing occurs for that position. Examples: tender offers, exchange offers, rights exercises, warrant exercises.</div></div>
+
+    <div class="gl-item"><div class="gl-term">XML</div><div class="gl-def">Extensible Markup Language. The data format used by ISO 20022 MX messages. XML allows each data element to be explicitly named and validated, enabling structured, machine-readable messages with clear field boundaries—replacing the fixed-length, code-heavy field structure of ISO 15022 MT messages.</div></div>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section id="sources">
+  <div class="eyebrow">Sources &amp; References</div>
+  <h2 class="section-title">Source Documentation</h2>
+  <p class="section-lead">All content in this guide is drawn from the primary sources listed below. Links are provided for direct access. DTCC PDF documents are subject to periodic revision; verify the current version on dtcc.com before relying on content for systems implementation or coding purposes.</p>
+
+  <div class="subsection-title">DTCC — Service Guides</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>Document</th><th>Notes</th><th>Link</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="strong">Reorganizations Service Guide</td>
+          <td>Authoritative guide for all DTC reorganization processing. Covers ATOP, voluntary tenders, exchange offers, rights subscriptions, warrants, and mandatory reorgs. Updated March 2026. Primary source for the CA Web / PTS / PBS channel distinctions in this guide.</td>
+          <td><a href="https://www.dtcc.com/~/media/Files/Downloads/legal/service-guides/Reorganizations.pdf" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">dtcc.com &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">DTCC Rules and Procedures (All Service Guides)</td>
+          <td>Landing page for all current DTCC service guides including Distributions, Redemptions, and Reorganizations. Always consult for the most current version of any service guide.</td>
+          <td><a href="https://www.dtcc.com/legal/rules-and-procedures" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">dtcc.com &rarr;</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection-title">DTCC — ISO 20022 Messaging Documentation</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>Document</th><th>Notes</th><th>Link</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="strong">ISO 20022 Messaging Specifications (Landing Page)</td>
+          <td>DTCC's central repository for SR message schemas, implementation ZIP archives, Message Usage Guidelines, and extension schemas for all event categories. Primary reference for coding and systems implementation.</td>
+          <td><a href="https://www.dtcc.com/asset-services/corporate-actions-processing/iso-20022-messaging-specifications" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">dtcc.com &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">Getting Started with ISO 20022 Messaging (v2.0)</td>
+          <td>DTCC overview document covering MX Identifier structure, variant and version concepts, DTCC data model, supplementary data extensions, and cross-reference from DTC legacy elements to ISO 20022 elements.</td>
+          <td><a href="https://www.dtcc.com/-/media/Files/Downloads/issues/Corporate-Actions-Transformation/Getting_Started_CA_ISO_20022.pdf" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">PDF &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">ISO 20022 Messaging for Distributions Instructions User Guide (SR 2025)</td>
+          <td>Covers CAIN, CAIC, CAIS, CACS, and CAST in the distributions instruction lifecycle. Source for CAST timing (cutoff minus 5 through minus 1), ACK/NAK mechanics, and the 15-message type inventory used throughout this guide.</td>
+          <td><a href="https://www.dtcc.com/-/media/Files/Downloads/issues/Corporate-Actions-Transformation/User_Guide_ISO_20022_Messaging_for_Instructions.pdf" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">PDF &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">ISO 20022 Messaging for Reorganizations Instructions User Guide (SR 2025)</td>
+          <td>Covers CAIN, CAIC, CAIS, and CACS in the voluntary reorganization lifecycle. Source for variant .001 standardization (SR 2025), MX Identifier structure, real-time instruction processing, and reorg-specific rules including deleted/cancelled event handling.</td>
+          <td><a href="https://www.dtcc.com/-/media/Files/Downloads/issues/Corporate-Actions-Transformation/ISO-20022-Messaging-for-ReorgInstr.pdf" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">PDF &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">ISO 20022 Messaging for Distributions: Entitlements and Allocations User Guide</td>
+          <td>Covers CANO, CAPA, CACO, and CARE in the distributions entitlement lifecycle. Source for CAID / COAF identifier linkage, real-time versus batch messaging comparison, and the six-message entitlements flow.</td>
+          <td><a href="https://www.dtcc.com/-/media/Files/Downloads/issues/Corporate-Actions-Transformation/ISO_20022_EntAlloc_UG.pdf" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">PDF &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">SR 2025 Implementation Deployment Plan</td>
+          <td>DTCC's deployment documentation for the SR 2025 release. Primary source confirming variant .001 standardization across all 15 DTCC corporate actions message types and the full DTCC message inventory listed in this guide.</td>
+          <td><a href="https://www.dtcc.com/-/media/Files/pdf/2025/7/22/SR2025-Implementation_072225.pdf" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">PDF &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">DTCC Learning Center — ISO 20022 Messaging</td>
+          <td>Scenario-based guides, webinars, and e-learning modules covering CA Web, ISO 20022 messaging, and event-type processing for distributions, redemptions, and reorganizations. Registration required for full access.</td>
+          <td><a href="https://dtcclearning.com/products-and-services/asset-services/corporate-actions-processing/iso-20022-messaging.html" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">dtcclearning.com &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">CA Transformation Milestone Press Release (April 2015)</td>
+          <td>DTCC press release announcing the completion of Phase 3 (distributions). Source for the 6,500+ client migration figure and the approximately 500,000 annual distribution instructions converted from manual to electronic submission.</td>
+          <td><a href="https://www.dtcc.com/news/2015/april/28/dtcc-reaches-another-milestone-in-its-corporate-actions-transformation-initiative" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">dtcc.com &rarr;</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection-title">SWIFT</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>Document</th><th>Notes</th><th>Link</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="strong">ISO 20022 Standards — SWIFT</td>
+          <td>SWIFT's primary ISO 20022 standards page. Covers SWIFT's role as Registration Authority, the CBPR+ migration timeline, HVPS+ guidelines, and the distinction between cross-border payments migration and securities event messaging.</td>
+          <td><a href="https://www.swift.com/standards/iso-20022/iso-20022-standards" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">swift.com &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">Corporate Actions — ISO 20022 Messages (SWIFT Training)</td>
+          <td>SWIFT training catalogue page for the ISO 20022 corporate actions message course. Covers message flows for mandatory and voluntary events, SMPG recommendations, and CAJWG principles.</td>
+          <td><a href="https://www.swift.com/myswift/services/training/swift-training-catalogue/browse-swift-training-catalogue/corporate-actions-iso-20022-messages" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">swift.com &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">Corporate Actions — ISO 15022 Messages (SWIFT Training)</td>
+          <td>SWIFT training catalogue page for the ISO 15022 MT corporate actions course. Reference for MT564–MT568 message purposes and lifecycle flows.</td>
+          <td><a href="https://www.swift.com/myswift/services/training/swift-training-catalogue/browse-swift-training-catalogue/corporate-actions-iso-15022-messages" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">swift.com &rarr;</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection-title">ISO 20022.org</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>Document</th><th>Notes</th><th>Link</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="strong">About ISO 20022</td>
+          <td>ISO 20022's official overview page. Covers the standard's methodology, the role of the Registration Authority, and the Financial Repository. Authoritative source for the standard's foundational description.</td>
+          <td><a href="https://www.iso20022.org/about-iso-20022" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">iso20022.org &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">ISO 20022 Message Definitions — Securities Events (seev)</td>
+          <td>The seev business domain message catalogue. Lists all current and archived seev message definitions with XSD schemas and Business Application Header (BAH) documentation. Reference for current message version numbers.</td>
+          <td><a href="https://www.iso20022.org/iso-20022-message-definitions?business-domain=6" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">iso20022.org &rarr;</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection-title">Industry &amp; Regulatory Sources</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>Document</th><th>Notes</th><th>Link</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="strong">ISITC Corporate Actions Market Practice (v8.0, December 2022)</td>
+          <td>US market practice guidelines for ISO 15022 corporate actions messaging, covering MT564–MT568 usage rules, event type codes, message sequence diagrams, and the MT567 status and reason code grid. Reference for MT-to-MX mapping context.</td>
+          <td><a href="https://isitc.org/wp-content/uploads/Corporate_Actions_Market_Practice_v8.0_Dec2022.pdf" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">PDF &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">Federal Reserve Financial Services — FedNow and ISO 20022</td>
+          <td>Federal Reserve overview of the ISO 20022 standard's origins, structure, and adoption across US payment market infrastructures. Source for the 2004 publication date and TC68 committee attribution.</td>
+          <td><a href="https://www.frbservices.org/financial-services/fednow/what-is-iso-20022-why-does-it-matter" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">frbservices.org &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">SWIFT/DTCC ISO 20022 Asset Servicing Messaging Presentation (ECB, January 2018)</td>
+          <td>SWIFT presentation to the ECB Capital Markets Harmonisation Task Force. Source for the seev message-to-MT mapping table, including variant .002 identifiers for the pre-SR 2025 message set.</td>
+          <td><a href="https://www.ecb.europa.eu/paym/groups/shared/docs/8846a-cmh-tf-2018-01-16-presentation-swift-assetservicing-ca-pv-messages.pdf" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">PDF &rarr;</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--amber-dim);padding:28px 0 0;margin-top:40px">
+  <p style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:rgba(245,241,235,.22);max-width:100%;line-height:1.7">
+    Primary sources: SWIFT (swift.com), DTCC (dtcc.com), ISO 20022 (iso20022.org), DTCC Learning Center (dtcclearning.com), ISITC, SMPG. This guide is intended for educational purposes for back-office operations professionals. It does not constitute legal, regulatory, coding, or implementation guidance. Consult current DTCC ISO 20022 Messaging Specifications, Message Usage Guidelines, and the DTCC Learning Center for systems implementation and coding purposes. All message version numbers are subject to change with each annual Standard Release.
+  </p>
+</div>
+
+</main>
+</div>
+
+<script>
+// Intersection observer for nav active state
+const sections = document.querySelectorAll('section[id]');
+const links = document.querySelectorAll('.nav-link');
+
+const navObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => {
+        l.classList.remove('active');
+        if (l.getAttribute('href') === '#' + e.target.id) l.classList.add('active');
+      });
+    }
+  });
+}, { rootMargin: '-15% 0px -75% 0px' });
+
+sections.forEach(s => navObs.observe(s));
+
+// Fade-up on scroll
+const fadeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { rootMargin: '0px 0px -8% 0px' });
+
+document.querySelectorAll('section').forEach(s => fadeObs.observe(s));
+document.querySelector('.hero').classList.add('visible');
+</script>
+</body>
+</html>
