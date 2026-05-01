@@ -539,7 +539,7 @@ td.note{font-size:12px}
 
     <span class="nav-section-label">Event Playbooks</span>
     <a href="#voluntary" class="nav-link">Voluntary Events</a>
-    <a href="#mwco" class="nav-link">Mandatory with Choice</a>
+    <a href="#mwco" class="nav-link">Mandatory with Options (CHOS)</a>
     <a href="#mandatory" class="nav-link">Mandatory Events</a>
     <a href="#redemptions" class="nav-link">Redemptions</a>
     <a href="#income" class="nav-link">Income &amp; Distributions</a>
@@ -567,7 +567,7 @@ td.note{font-size:12px}
     <div class="hero-stat">15 Message Types<span>Used by DTCC (SR 2025)</span></div>
     <div class="hero-stat">seev<span>Securities Events — the ISO 20022 business area for all corporate actions messages</span></div>
     <div class="hero-stat">SR 2025<span>Current standard release; all core messages now on variant .001</span></div>
-    <div class="hero-stat">5 Event Categories<span>Voluntary · MWCO · Mandatory · Redemptions · Income</span></div>
+    <div class="hero-stat">5 Event Categories<span>Voluntary · CHOS · Mandatory · Redemptions · Income</span></div>
   </div>
 </section>
 
@@ -1104,15 +1104,15 @@ td.note{font-size:12px}
 <!-- EVENT PLAYBOOKS: MWCO -->
 <section id="mwco">
   <div class="eyebrow">Event Playbooks · II</div>
-  <h2 class="section-title">Mandatory with Choice Events</h2>
-  <p class="section-lead">Mandatory-with-choice events will be processed for all eligible positions regardless of whether an instruction is received. The distinction from a purely voluntary event is the presence of a default option: if no CAIN is submitted by the deadline, the participant's position is processed under the default option specified in the CANO.</p>
+  <h2 class="section-title">Mandatory with Options Events (CHOS)</h2>
+  <p class="section-lead">In DTCC's ISO 20022 implementation, this event category carries the processing code <strong>CHOS</strong> and the formal label <strong>Mandatory with Options</strong>. The industry shorthand "mandatory with choice" or "MWCO" refers to the same category and is widely used in operations contexts. Both terms appear throughout DTC documentation and industry practice.</p>
 
-  <p>Common mandatory-with-choice events in the US market include dividend reinvestment plans (DRIPs) where shareholders may elect cash instead of stock, and stock/cash elections in mergers where shareholders choose the form of consideration. Every eligible holder receives a result. The instruction governs which option applies to a given position, not whether processing occurs at all.</p>
+  <p>CHOS events are mandated by the issuer but offer a choice of entitlement to the holder. The event will be processed for all eligible positions regardless of whether an instruction is received. A default option is always present: if no CAIN is submitted by the deadline, DTC processes the position under the default option identified in the CANO. Common examples include dividend with options, dividend reinvestment plans (DRIPs) where shareholders may elect cash instead of stock, and stock/cash elections in mergers. Every eligible holder receives a result. The instruction governs which option applies to a given position, not whether processing occurs at all.</p>
 
-  <p>The message flow for mandatory-with-choice events is structurally identical to voluntary events. The operational distinction lies in the CANO itself, which identifies a default option number. DTC processes all uninstructed positions against that default after cutoff.</p>
+  <p>The message flow for CHOS events is structurally identical to voluntary events. The operational distinction lies in the CANO itself, which identifies a default option number. DTC processes all uninstructed positions against that default after cutoff.</p>
 
   <div class="flow-diagram">
-    <div class="flow-title">Mandatory with Choice — Full Message Lifecycle</div>
+    <div class="flow-title">Mandatory with Options (CHOS) — Full Message Lifecycle</div>
     <div class="flow-actors">
       <div class="flow-actor flow-actor-dtc">DTC — Outbound</div>
       <div class="flow-actor flow-actor-par">Participant — Inbound</div>
@@ -1475,7 +1475,7 @@ td.note{font-size:12px}
 
     <div class="gl-item"><div class="gl-term">Mandatory Event</div><div class="gl-def">A corporate action processed automatically for all eligible positions without requiring participant instruction. Examples: stock splits, cash dividends, completed mergers with uniform consideration. No CAIN is submitted; DTC generates CAPA and CACO based on eligible positions.</div></div>
 
-    <div class="gl-item"><div class="gl-term">Mandatory with Choice (MWCO)</div><div class="gl-def">A corporate action processed for all eligible positions with a defined default option. Participants may submit a CAIN to elect a non-default option. Without a CAIN, DTC processes the position against the default specified in the CANO. Examples: DRIPs, stock/cash elections in mergers.</div></div>
+    <div class="gl-item"><div class="gl-term">CHOS / Mandatory with Options</div><div class="gl-def">DTCC's ISO 20022 processing code and formal label for events that are mandated by the issuer but offer a choice of entitlement. The holder may submit a CAIN to elect a non-default option; without a CAIN, DTC processes the position against the default specified in the CANO. The industry shorthand "mandatory with choice" and the abbreviation MWCO refer to the same event category. Examples: dividend with options, DRIPs, stock/cash elections in mergers.</div></div>
 
     <div class="gl-item"><div class="gl-term">MQ Messaging</div><div class="gl-def">IBM MQ (Message Queue). The messaging middleware used by DTC for real-time delivery of ISO 20022 messages to and from participants. Replaced the end-of-day batch file model used under legacy proprietary CCF formats.</div></div>
 
