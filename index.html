@@ -928,7 +928,7 @@ td.note{font-size:12px}
       <div class="card-abbrev">CAST</div>
       <div class="card-name">Corporate Action Instruction Statement Report</div>
       <div class="card-seev">DTC-specific</div>
-      <div class="card-desc">A DTC-specific reporting message sent in the days approaching the instruction deadline: from cutoff minus five through cutoff minus one. Provides a running statement of all instructions DTC has on record for that participant for a given event. Used for pre-cutoff reconciliation to ensure submitted positions match expectations before the window closes.</div>
+      <div class="card-desc">A DTC-specific reporting message providing a running statement of all instructions DTC has on record for a participant for a given event. Used for pre-deadline reconciliation. Timing varies by event category and activity code. For distributions, CAST is sent daily from cutoff date minus 5 through cutoff date minus 1. For voluntary reorganization events, timing is anchored to expiration date. During the messaging period through Actual Expiration Date minus 2, CAST sends once daily at 8:00 p.m. when instruction activity is present. Frequency then increases significantly: five intraday sends on Actual Expiration Date minus 1 (12:00 p.m., 1:30 p.m., 4:00 p.m., 4:30 p.m., and 8:00 p.m.) and four sends on Actual Expiration Date itself (12:00 p.m., 1:30 p.m., 4:00 p.m., and 4:30 p.m.). The 8:00 p.m. send on expiration date is not generated as the instruction window has closed. Consult the DTCC User Guide: ISO 20022 Messaging for Reorganizations — Entitlements and Allocations (pages 83–84) for the full CAST Messaging Periods table by activity code.</div>
       <div class="card-dir">DTC &rarr; Participant</div>
     </div>
   </div>
@@ -1071,7 +1071,7 @@ td.note{font-size:12px}
   <h2 class="section-title">Voluntary Events</h2>
   <p class="section-lead">Voluntary events require affirmative action from a participant to participate. If no instruction is received prior to the deadline, the participant does not participate in the event and no processing occurs for that position.</p>
 
-  <p>Common voluntary events in the US market include tender offers, exchange offers, rights exercises, and warrant exercises. As a DTC participant sitting between your clients and DTC, participation in a voluntary event depends entirely on submitting a timely and valid CAIN before the DTC instruction deadline. Late instructions—submitted after cutoff—are not accepted regardless of circumstance.</p>
+  <p>Common voluntary events in the US market include tender offers, exchange offers, rights exercises, subscription offers, and warrant exercises. As a DTC participant sitting between your clients and DTC, participation in a voluntary event depends entirely on submitting a timely and valid CAIN before the DTC instruction deadline. Late instructions—submitted after cutoff—are not accepted regardless of circumstance.</p>
 
   <p>The CANO announces the event and specifies option numbers. The CANO-E, distributed after DTC captures your eligible position, confirms your specific balance available for election. These two messages provide everything needed to construct and submit a CAIN.</p>
 
@@ -1117,7 +1117,7 @@ td.note{font-size:12px}
       <div class="flow-row">
         <div class="flow-cell dtc">
           <div class="flow-code">CAST</div>
-          <div class="flow-desc">Statement report (cutoff -5 through -1)</div>
+          <div class="flow-desc">Statement report (timing varies by event type)</div>
         </div>
         <div class="flow-arrow flow-arrow-right"><div class="flow-arrow-line"></div><div class="flow-dir">DTC &rarr; Participant</div></div>
         <div class="flow-cell empty"><div class="flow-code">—</div></div>
@@ -1141,7 +1141,7 @@ td.note{font-size:12px}
     </div>
   </div>
 
-  <p>Note that CAIN may be submitted and revised multiple times during the instruction window. Each submission generates a CAIS response. The last accepted CAIN on file before cutoff governs the election. The CAST reports in the days before cutoff allow participants to verify that DTC's records match the intended election before the window closes.</p>
+  <p>Note that CAIN may be submitted and revised multiple times during the instruction window. Each submission generates a CAIS response. The last accepted CAIN on file before cutoff governs the election. The CAST reports allow participants to verify that DTC's records match the intended election before the window closes. CAST timing is event-category-specific: for distributions, reports run from cutoff date minus 5 through cutoff date minus 1; for voluntary reorganization events including tenders and exchanges, the schedule is anchored to expiration date and varies by activity code. Consult the DTCC User Guide: ISO 20022 Messaging for Reorganizations — Entitlements and Allocations for the full CAST Messaging Periods table.</p>
 </section>
 
 <!-- EVENT PLAYBOOKS: MWCO -->
@@ -1612,6 +1612,11 @@ td.note{font-size:12px}
           <td class="strong">DTCC Learning Center — ISO 20022 Messaging</td>
           <td>Scenario-based guides, webinars, and e-learning modules covering CA Web, ISO 20022 messaging, and event-type processing for distributions, redemptions, and reorganizations. Registration required for full access.</td>
           <td><a href="https://dtcclearning.com/products-and-services/asset-services/corporate-actions-processing/iso-20022-messaging.html" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">dtcclearning.com &rarr;</a></td>
+        </tr>
+        <tr>
+          <td class="strong">ISO 20022 Messaging for Reorganizations: Entitlements and Allocations User Guide (v1.3)</td>
+          <td>Covers CANO-E, CAPA, CAST, CACO, and CAPS in the reorganization entitlements lifecycle. Primary source for the CAST Messaging Periods table (page 83) detailing event-type-specific CAST timing by activity code, including tender and exchange (codes 52, 52M, 54T), rights (59), conversions and warrant exercises (54, 60), and put events. Authoritative reference for CAST timing for all voluntary reorganization event categories.</td>
+          <td><a href="https://www.dtcc.com/-/media/Files/Downloads/issues/Corporate-Actions-Transformation/ISO-20022-User-Guide-Reorganization-Lifecycle-Entitlements-and-Allocations.pdf" target="_blank" rel="noopener" style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:11px">PDF &rarr;</a></td>
         </tr>
         <tr>
           <td class="strong">CA Transformation Milestone Press Release (April 2015)</td>
